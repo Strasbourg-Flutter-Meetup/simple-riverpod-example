@@ -7,6 +7,7 @@
 // 04.01.2024 09:07
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_example/features/dashboard/presentation/provider/bulb_state.dart';
+import 'package:riverpod_example/mixin/state_data_updater_mixin.dart';
 import 'package:riverpod_example/mixin/state_template_handler_mixin.dart';
 
 /// A provider for managing the state of a bulb feature.
@@ -25,10 +26,14 @@ final bulbProvider = StateNotifierProvider<BulbStateNotifier, BulbState>(
 /// and to switch the bulb on or off. It handles the state internally
 /// and updates it accordingly using the [BulbState] class.
 class BulbStateNotifier extends StateNotifier<BulbState>
-    with StateTemplateHandlerMixin<BulbStateData> {
+    with
+        StateTemplateHandlerMixin<BulbStateData>,
+        StateDataUpdaterMixin<BulbStateData> {
   BulbStateNotifier(super._state);
 
-  BulbStateData _stateData = const BulbStateData(bulbIsOn: false);
+  /// The current state data representing the bulb's state.
+  @override
+  BulbStateData stateData = const BulbStateData(bulbIsOn: false);
 
   /// Internal flag to track the on/off state of the bulb.
   bool _bulbIsOn = false;
@@ -37,8 +42,7 @@ class BulbStateNotifier extends StateNotifier<BulbState>
   ///
   /// It sets up initial state data and updates the state to [BulbState.initialized].
   void initialize() {
-    _updateStateData();
-    setInitialized(data: _stateData);
+    setInitialized(data: stateData);
   }
 
   /// Switches the bulb on.
@@ -51,8 +55,8 @@ class BulbStateNotifier extends StateNotifier<BulbState>
       setLoading();
       _bulbIsOn = true;
 
-      _updateStateData();
-      setLoaded(data: _stateData);
+      updateStateData();
+      setLoaded(data: stateData);
     } catch (e) {
       setError();
     }
@@ -69,16 +73,17 @@ class BulbStateNotifier extends StateNotifier<BulbState>
 
       _bulbIsOn = false;
 
-      _updateStateData();
+      updateStateData();
 
-      setLoaded(data: _stateData);
+      setLoaded(data: stateData);
     } catch (e) {
       setError();
     }
   }
 
-  /// Updates the [_stateData] based on the current [_bulbIsOn] value.
-  void _updateStateData() {
-    _stateData = BulbStateData(bulbIsOn: _bulbIsOn);
+  @override
+  void updateStateData() {
+    stateData = BulbStateData(bulbIsOn: _bulbIsOn);
   }
 }
+
