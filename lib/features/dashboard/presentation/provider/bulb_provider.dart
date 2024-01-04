@@ -7,6 +7,7 @@
 // 04.01.2024 09:07
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_example/features/dashboard/presentation/provider/bulb_state.dart';
+import 'package:riverpod_example/mixin/state_template_handler_mixin.dart';
 
 /// A provider for managing the state of a bulb feature.
 ///
@@ -23,11 +24,11 @@ final bulbProvider = StateNotifierProvider<BulbStateNotifier, BulbState>(
 /// This class provides methods to initialize the bulb state,
 /// and to switch the bulb on or off. It handles the state internally
 /// and updates it accordingly using the [BulbState] class.
-class BulbStateNotifier extends StateNotifier<BulbState> {
+class BulbStateNotifier extends StateNotifier<BulbState>
+    with StateTemplateHandlerMixin<BulbStateData> {
   BulbStateNotifier(super._state);
 
-  /// Internal field to hold the state data.
-  BulbStateData? _stateData;
+  BulbStateData _stateData = const BulbStateData(bulbIsOn: false);
 
   /// Internal flag to track the on/off state of the bulb.
   bool _bulbIsOn = false;
@@ -37,7 +38,7 @@ class BulbStateNotifier extends StateNotifier<BulbState> {
   /// It sets up initial state data and updates the state to [BulbState.initialized].
   void initialize() {
     _updateStateData();
-    state = BulbState.initialized(data: _stateData);
+    setInitialized(data: _stateData);
   }
 
   /// Switches the bulb on.
@@ -47,13 +48,13 @@ class BulbStateNotifier extends StateNotifier<BulbState> {
   /// If an error occurs, it sets the state to [BulbState.error].
   void switchBulbOn() {
     try {
-      _loading();
+      setLoading();
       _bulbIsOn = true;
 
       _updateStateData();
-      _loaded();
+      setLoaded(data: _stateData);
     } catch (e) {
-      _error();
+      setError();
     }
   }
 
@@ -64,31 +65,16 @@ class BulbStateNotifier extends StateNotifier<BulbState> {
   /// If an error occurs, it sets the state to [BulbState.error].
   void switchBulbOff() {
     try {
-      _loading();
+      setLoading();
 
       _bulbIsOn = false;
 
       _updateStateData();
 
-      _loaded();
+      setLoaded(data: _stateData);
     } catch (e) {
-      _error();
+      setError();
     }
-  }
-
-  /// Sets the state to [BulbState.loading] with the previous data.
-  void _loading() {
-    state = BulbState.loading(previousData: _stateData);
-  }
-
-  /// Sets the state to [BulbState.loaded] with the current state data.
-  void _loaded() {
-    state = BulbState.loaded(data: _stateData);
-  }
-
-  /// Sets the state to [BulbState.error] in case of an error.
-  void _error() {
-    state = const BulbState.error();
   }
 
   /// Updates the [_stateData] based on the current [_bulbIsOn] value.
