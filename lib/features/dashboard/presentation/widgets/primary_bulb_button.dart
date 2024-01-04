@@ -8,7 +8,7 @@
 // 05.10.2023 09:42
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_example/mixin/provider_mixin.dart';
+import 'package:riverpod_example/mixin/bulb_button_handler_mixin.dart';
 
 /// A primary button widget for controlling a bulb in the application.
 ///
