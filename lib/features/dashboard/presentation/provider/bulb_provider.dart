@@ -13,9 +13,10 @@ import 'package:riverpod_example/features/dashboard/presentation/provider/bulb_s
 /// It uses `BulbStateNotifier` to handle state changes and
 /// provide the current state of the bulb to its consumers.
 final bulbProvider = StateNotifierProvider<BulbStateNotifier, BulbState>(
-    (ref) => BulbStateNotifier(
-          const BulbState.initial(),
-        ));
+  (ref) => BulbStateNotifier(
+    const BulbState.initial(),
+  )..initialize(),
+);
 
 /// A [StateNotifier] that manages the state of a bulb.
 ///

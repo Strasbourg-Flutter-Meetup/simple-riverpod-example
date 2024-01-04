@@ -39,31 +39,7 @@ class Bulb extends ConsumerWidget {
     final state = ref.watch(bulbProvider);
 
     switch (state.type) {
-      case StateTemplateType.initial:
-        // Trigger initialization of the bulb state when in the initial state.
-
-        // In the context of the StateTemplate concept, where we want to initialize
-        // state right after the widget build, Future.microtask is generally a
-        // better choice over WidgetsBinding.instance.addFrameCallBack.
-        // It will ensure the initialization code runs immediately
-        // after the build method's execution, avoiding potential issues with
-        // rendering but not waiting for the next frame.
-        //
-        // However, everytime when the initial state is called the initialize
-        // method is executed. To prevent that, the initial state is just called
-        // when initializing the StateNotifier.
-        //
-        // E. g.
-        //
-        // final bulbProvider = StateNotifierProvider<BulbStateNotifier, BulbState>(
-        //     (ref) => BulbStateNotifier(
-        //           const BulbState.initial(),
-        //         ));
-        //
-        Future.microtask(() => ref.read(bulbProvider.notifier).initialize());
-        return const CenterTemplate(child: LoadingCycle());
-      // Fall through to loading state for UI consistency.
-      case StateTemplateType.loading:
+      case StateTemplateType.initial || StateTemplateType.loading:
         // Display a loading indicator during the loading state.
         return const CenterTemplate(child: LoadingCycle());
 
