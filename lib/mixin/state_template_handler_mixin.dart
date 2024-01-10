@@ -38,7 +38,7 @@ import 'package:riverpod_example/state_template/state_template.dart';
 ///   }
 /// }
 /// ```
-mixin StateTemplateHandlerMixin<T> on StateNotifier<StateTemplate<T>> {
+mixin StateTemplateHandlerMixin<T> on Notifier<StateTemplate<T>> {
   /// Updates the state to [StateTemplateType.loading], optionally using [previousData].
   ///
   /// Use this method to indicate that a loading process has started.
@@ -69,5 +69,9 @@ mixin StateTemplateHandlerMixin<T> on StateNotifier<StateTemplate<T>> {
   void setInitialized({T? data}) {
     state = StateTemplate<T>.initialized(data: data);
   }
-}
 
+  /// Initializes the state.
+  ///
+  /// It should be used to return the StateTemplate<T>.initial() state.
+  dynamic initialize();
+}

@@ -14,10 +14,8 @@ import 'package:riverpod_example/mixin/state_template_handler_mixin.dart';
 ///
 /// It uses `BulbStateNotifier` to handle state changes and
 /// provide the current state of the bulb to its consumers.
-final bulbProvider = StateNotifierProvider<BulbStateNotifier, BulbState>(
-  (ref) => BulbStateNotifier(
-    const BulbState.initial(),
-  )..initialize(),
+final bulbProvider = NotifierProvider<BulbStateNotifier, BulbState>(
+  () => BulbStateNotifier()..initialize(),
 );
 
 /// A [StateNotifier] that manages the state of a bulb.
@@ -25,11 +23,11 @@ final bulbProvider = StateNotifierProvider<BulbStateNotifier, BulbState>(
 /// This class provides methods to initialize the bulb state,
 /// and to switch the bulb on or off. It handles the state internally
 /// and updates it accordingly using the [BulbState] class.
-class BulbStateNotifier extends StateNotifier<BulbState>
+class BulbStateNotifier extends Notifier<BulbState>
     with
         StateTemplateHandlerMixin<BulbStateData>,
         StateDataUpdaterMixin<BulbStateData> {
-  BulbStateNotifier(super._state);
+  BulbStateNotifier();
 
   /// The current state data representing the bulb's state.
   @override
@@ -41,8 +39,14 @@ class BulbStateNotifier extends StateNotifier<BulbState>
   /// Initializes the bulb state.
   ///
   /// It sets up initial state data and updates the state to [BulbState.initialized].
-  void initialize() {
-    setInitialized(data: stateData);
+  @override
+  BulbState initialize() {
+    return const BulbState.initial();
+  }
+
+  @override
+  BulbState build() {
+    return BulbState.initialized(data: stateData);
   }
 
   /// Switches the bulb on.
@@ -86,4 +90,3 @@ class BulbStateNotifier extends StateNotifier<BulbState>
     stateData = BulbStateData(bulbIsOn: _bulbIsOn);
   }
 }
-
